@@ -82,22 +82,22 @@ function main() {
         }
     }
 
-    request('GET', `/repos/${env.GITHUB_REPOSITORY}/git/refs/tags/${prefix}build-number-`, null, (err, status, result) => {
+    request('GET', `/repos/${env.GITHUB_REPOSITORY}/git/refs/tags/${prefix}Build-`, null, (err, status, result) => {
     
         let nextBuildNumber, nrTags;
     
         if (status === 404) {
-            console.log('No build-number ref available, starting at 1.');
+            console.log('No Build ref available, starting at 1.');
             nextBuildNumber = 1;
             nrTags = [];
         } else if (status === 200) {
-            const regexString = `/${prefix}build-number-(\\d+)$`;
+            const regexString = `/${prefix}Build-(\\d+)$`;
             const regex = new RegExp(regexString);
             nrTags = result.filter(d => d.ref.match(regex));
             
             const MAX_OLD_NUMBERS = 5; //One or two ref deletes might fail, but if we have lots then there's something wrong!
             if (nrTags.length > MAX_OLD_NUMBERS) {
-                fail(`ERROR: Too many ${prefix}build-number- refs in repository, found ${nrTags.length}, expected only 1. Check your tags!`);
+                fail(`ERROR: Too many ${prefix}Build- refs in repository, found ${nrTags.length}, expected only 1. Check your tags!`);
             }
             
             //Existing build numbers:
@@ -112,18 +112,18 @@ function main() {
             if (err) {
                 fail(`Failed to get refs. Error: ${err}, status: ${status}`);
             } else {
-                fail(`Getting build-number refs failed with http status ${status}, error: ${JSON.stringify(result)}`);
+                fail(`Getting Build refs failed with http status ${status}, error: ${JSON.stringify(result)}`);
             } 
         }
 
         let newRefData = {
-            ref:`refs/tags/${prefix}build-number-${nextBuildNumber}`, 
+            ref:`refs/tags/${prefix}Build-${nextBuildNumber}`, 
             sha: env.GITHUB_SHA
         };
     
         request('POST', `/repos/${env.GITHUB_REPOSITORY}/git/refs`, newRefData, (err, status, result) => {
             if (status !== 201 || err) {
-                fail(`Failed to create new build-number ref. Status: ${status}, err: ${err}, result: ${JSON.stringify(result)}`);
+                fail(`Failed to create new Build ref. Status: ${status}, err: ${err}, result: ${JSON.stringify(result)}`);
             }
 
             console.log(`Successfully updated build number to ${nextBuildNumber}`);
