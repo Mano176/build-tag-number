@@ -112,7 +112,7 @@ function main() {
         }
 
         let newRefData = {
-            ref:`refs/tags/${version_number}-Build-${nextBuildNumber}`, 
+            ref:`refs/tags/Version-${version_number}-Build-${nextBuildNumber}`, 
             sha: env.GITHUB_SHA
         };
     
