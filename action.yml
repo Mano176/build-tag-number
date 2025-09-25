@@ -1,6 +1,6 @@
 name: 'Build Tag Number'
 description: 'Sequential build numbers for workflow runs based on Git tag'
-author: 'Onyx Mueller'
+author: 'Mano176'
 runs:
   using: 'node20'
   main: 'main.js'
@@ -8,9 +8,9 @@ inputs:
   token:
     description: 'GitHub Token to create and delete refs (GITHUB_TOKEN)'
     required: false # Not required when getting the stored build number for later jobs, only in the first jobs when it's generated
-  prefix:
-    description: 'Prefix for the build-number-<num> tag to make it unique if tracking multiple build numbers'
-    required: false
+  version_number:
+    description: 'Version number'
+    required: true
 
 outputs:
   build_number:

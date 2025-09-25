@@ -63,7 +63,7 @@ function request(method, path, data, callback) {
 function main() {
 
     const path = 'BUILD_NUMBER/BUILD_NUMBER';
-    const prefix = env.INPUT_PREFIX ? `${env.INPUT_PREFIX}-` : '';
+    const version_number = env.INPUT_VERSION_NUMBER;
 
     //See if we've already generated the build number and are in later steps...
     if (fs.existsSync(path)) {
@@ -82,7 +82,7 @@ function main() {
         }
     }
 
-    request('GET', `/repos/${env.GITHUB_REPOSITORY}/git/refs/tags/${prefix}Build-`, null, (err, status, result) => {
+    request('GET', `/repos/${env.GITHUB_REPOSITORY}/git/refs/tags/`, null, (err, status, result) => {
     
         let nextBuildNumber, nrTags;
     
@@ -91,7 +91,7 @@ function main() {
             nextBuildNumber = 1;
             nrTags = [];
         } else if (status === 200) {
-            const regexString = `/${prefix}Build-(\\d+)$`;
+            const regexString = `/Version-(\\d+)\.(\\d+)\.(\\d+)-Build-(\\d+)$`;
             const regex = new RegExp(regexString);
             nrTags = result.filter(d => d.ref.match(regex));
             
@@ -112,7 +112,7 @@ function main() {
         }
 
         let newRefData = {
-            ref:`refs/tags/${prefix}Build-${nextBuildNumber}`, 
+            ref:`refs/tags/${version_number}-Build-${nextBuildNumber}`, 
             sha: env.GITHUB_SHA
         };
     
